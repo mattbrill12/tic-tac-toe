@@ -3,7 +3,6 @@ import {GameInfo, PiecePlayed} from "./types";
 import {AppState} from "../../shared/types/appState";
 
 
-
 export const gameSlice = createSlice<GameInfo, SliceCaseReducers<GameInfo>>({
     name: 'gameSlice',
     initialState: {
@@ -12,19 +11,40 @@ export const gameSlice = createSlice<GameInfo, SliceCaseReducers<GameInfo>>({
             ['','',''],
             ['','',''],
             ['','','']
-        ]
+        ],
+        status: '',
+        winner: null,
+        draw: null
     },
     reducers: {
-        gameRefreshed: (state: GameInfo, actions:PayloadAction<GameInfo>) => actions.payload,
-        squarePlayed: (state: GameInfo, actions:PayloadAction<PiecePlayed>) => {
+        gameRestored: (state: GameInfo, action:PayloadAction<GameInfo>) => state = action.payload,
+        gameRefreshed: (state: GameInfo, action:PayloadAction<string[][]>) => {
+            state.board = action.payload;
+            state.isXTurn = true;
+            state.status = '';
+            state.draw = null;
+            state.winner = null;
+        },
+        squarePlayed: (state: GameInfo, action:PayloadAction<PiecePlayed>) => {
+
+            // exit if non empty square played, or game is over
+            if (state.board[action.payload.rowIndex][action.payload.colIndex] !== '' || state.status) return;
+
+            state.board[action.payload.rowIndex][action.payload.colIndex] = action.payload.symbol;
 
             const winner = checkHasWinner(state.board);
-            if (state.board[actions.payload.rowIndex][actions.payload.colIndex] !== '' || winner) return;
+            if (winner) {
+                state.winner = winner;
+                state.status = `${winner} wins!`;
+                return;
+            }
 
-
-            state.board[actions.payload.rowIndex][actions.payload.colIndex] = actions.payload.symbol;
-
-
+            const draw = isDraw(state.board);
+            if (draw) {
+                state.draw = draw;
+                state.status = 'Draw!';
+                return;
+            }
 
             state.isXTurn = !state.isXTurn;
         }
@@ -32,11 +52,17 @@ export const gameSlice = createSlice<GameInfo, SliceCaseReducers<GameInfo>>({
 
 });
 
+//
+//  selectors
+//
 export const getBoard = (state: AppState) => state.game.board;
 export const isXTurn = (state: AppState) => state.game.isXTurn;
+export const getGameStatus = (state:AppState) => state.game.status;
 
-
-function checkHasWinner(board:string[][]):string {
+//
+//  helpers
+//
+const checkHasWinner = (board:string[][]):string => {
 
     for(let i = 0; i < board.length; i++) {
         // rows
@@ -62,4 +88,13 @@ function checkHasWinner(board:string[][]):string {
 
     return '';
 
-}
+};
+
+const isDraw = (board:string[][]):boolean => {
+    for(let i = 0; i < board.length; i++) {
+        for(let j = 0; j < board.length; j++) {
+            if (board[i][j] === '') return false;
+        }
+    }
+    return true;
+};

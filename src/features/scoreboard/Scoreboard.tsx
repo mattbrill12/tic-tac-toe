@@ -1,13 +1,24 @@
-import React from 'react';
-import {useSelector} from "react-redux";
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../shared/types/appState";
-import {getScoreboard} from "./scoreboard.slice";
+import {getScoreboard, scoreboardSlice} from "./scoreboard.slice";
 import {ScoreboardInfo} from "./types";
 import styled from "styled-components";
+import {SCOREBOARD_STATE} from "../../shared/middleware/persistent";
 
 const Scoreboard = () => {
 
     const scoreboard = useSelector<AppState, ScoreboardInfo>(getScoreboard);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        try {
+            const storedScoreboardState = localStorage.getItem(SCOREBOARD_STATE);
+            if (storedScoreboardState) {
+                dispatch(scoreboardSlice.actions.scoreboardRestored(JSON.parse(storedScoreboardState)));
+            }
+        } finally {}
+    }, []);
 
     return (
         <table>

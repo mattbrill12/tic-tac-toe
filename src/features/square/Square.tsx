@@ -9,7 +9,6 @@ const applyStyles = (piecePlayed:PiecePlayed) => {
     let style = '';
     if (piecePlayed.rowIndex === 1) style = 'horiz';
     if (piecePlayed.colIndex === 1) style += ' vert';
-    if (piecePlayed.symbol === 'E') style += ' empty';
     return style;
 };
 
@@ -37,24 +36,21 @@ export default Square;
 const Box = styled.td`
     text-align: center;
     display: inline-block;
-    padding: 25px;
+    padding: 25px !important;
     font-weight: bold;
     font-size: 32px;
     width: 100px;
     height: 100px;
     border-bottom: none;
     &.vert {
-        border-left: 2px solid black;
-        border-right: 2px solid black;
+        border-left: 4px solid black;
+        border-right: 4px solid black;
     }
     &.horiz {
-        border-top: 2px solid black;
-        border-bottom: 2px solid black;
+        border-top: 4px solid black;
+        border-bottom: 4px solid black;
     }
-    
-    &.empty {
-        color: white;
-    }
+   
     cursor: pointer;
 `;
 
