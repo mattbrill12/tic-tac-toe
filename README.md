@@ -1,4 +1,14 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Tic Tac Toe
+This project was bootstrapped with create-react-app --template typescript
+
+Using reduxjs/toolkit
+https://redux.js.org/redux-toolkit/overview/
+
+CSS
+https://milligram.io/
+https://styled-components.com/
+
 
 ## Available Scripts
 
