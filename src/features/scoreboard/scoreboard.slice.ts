@@ -1,9 +1,6 @@
 import {createSlice, PayloadAction, SliceCaseReducers, createAction} from '@reduxjs/toolkit';
 import {AppState} from "../../shared/types/appState";
 import {ScoreboardInfo} from "./types";
-import {gameSlice} from "../game/game.slice";
-import {GameInfo} from "../game/types";
-
 
 export const scoreboardSlice = createSlice<ScoreboardInfo, SliceCaseReducers<ScoreboardInfo>>({
     name: 'scoreboardSlice',
@@ -15,19 +12,27 @@ export const scoreboardSlice = createSlice<ScoreboardInfo, SliceCaseReducers<Sco
     },
     reducers: {
         scoreboardRestored: (state: ScoreboardInfo, action:PayloadAction<ScoreboardInfo>) => state = action.payload,
-    },
-    extraReducers: builder => {
-        builder.addCase(gameSlice.actions.squarePlayed, (state, action) => {
+        winnerAnnounced: (state: ScoreboardInfo, action: PayloadAction<string>) => {
+            const winner = action.payload;
 
-            console.log(action);
-            // TODO update scoreboard
-            // state.players[0].record.wins++;
+            const tmpPlayers = [...state.players];
 
-        });
+
+            for (let player of tmpPlayers) {
+                if (player.name === winner)
+                    player.record.wins++;
+                else
+                    player.record.losses++;
+            }
+
+            state.players = tmpPlayers;
+        },
+        drawAnnounced: (state: ScoreboardInfo, action: PayloadAction<null>) => {
+            for(let player of state.players) {
+                player.record.draws++;
+            }
+        }
     }
 });
 
 export const getScoreboard = (state: AppState) => state.scoreboard;
-
-
-const scoreboardUpdated = createAction<GameInfo>('scoreboardUpdated');

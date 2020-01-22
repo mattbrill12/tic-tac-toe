@@ -3,13 +3,24 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../shared/types/appState";
 import {getScoreboard, scoreboardSlice} from "./scoreboard.slice";
 import {ScoreboardInfo} from "./types";
+import {GameInfo} from "../../features/game/types";
 import styled from "styled-components";
 import {SCOREBOARD_STATE} from "../../shared/middleware/persistent";
+import {getGameInfo} from "../game/game.slice";
 
 const Scoreboard = () => {
 
     const scoreboard = useSelector<AppState, ScoreboardInfo>(getScoreboard);
+    const gameInfo = useSelector<AppState, GameInfo>(getGameInfo);
     const dispatch = useDispatch();
+
+
+    useEffect(() => {
+
+        if (gameInfo.winner) dispatch(scoreboardSlice.actions.winnerAnnounced(gameInfo.winner));
+        if (gameInfo.draw) dispatch(scoreboardSlice.actions.drawAnnounced(null));
+
+    }, [gameInfo]);
 
     useEffect(() => {
         try {

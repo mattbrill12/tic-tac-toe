@@ -58,6 +58,7 @@ export const gameSlice = createSlice<GameInfo, SliceCaseReducers<GameInfo>>({
 export const getBoard = (state: AppState) => state.game.board;
 export const isXTurn = (state: AppState) => state.game.isXTurn;
 export const getGameStatus = (state:AppState) => state.game.status;
+export const getGameInfo = (state: AppState) => state.game;
 
 //
 //  helpers
