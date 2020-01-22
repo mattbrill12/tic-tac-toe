@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction, SliceCaseReducers} from '@reduxjs/toolkit';
 import {GameInfo, PiecePlayed} from "./types";
 import {AppState} from "../../shared/types/appState";
+import {scoreboardSlice} from "../scoreboard/scoreboard.slice";
 
 
 export const gameSlice = createSlice<GameInfo, SliceCaseReducers<GameInfo>>({
@@ -48,6 +49,10 @@ export const gameSlice = createSlice<GameInfo, SliceCaseReducers<GameInfo>>({
 
             state.isXTurn = !state.isXTurn;
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(scoreboardSlice.actions.winnerAnnounced, (state, action) => {state.winner = null});
+        builder.addCase(scoreboardSlice.actions.drawAnnounced, (state, action) => {state.draw = null});
     }
 
 });

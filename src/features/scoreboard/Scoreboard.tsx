@@ -15,6 +15,8 @@ const Scoreboard = () => {
     const dispatch = useDispatch();
 
 
+    let dataLoaded = false;
+
     useEffect(() => {
 
         if (gameInfo.winner) dispatch(scoreboardSlice.actions.winnerAnnounced(gameInfo.winner));
@@ -23,6 +25,7 @@ const Scoreboard = () => {
     }, [gameInfo]);
 
     useEffect(() => {
+
         try {
             const storedScoreboardState = localStorage.getItem(SCOREBOARD_STATE);
             if (storedScoreboardState) {
