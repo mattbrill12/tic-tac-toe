@@ -11,6 +11,11 @@ const Game = () => {
     const _isXTurn = useSelector<AppState, boolean>(isXTurn);
     const gameStatus = useSelector<AppState, string>(getGameStatus);
     const dispatch = useDispatch();
+    const initialBoard = [
+        ['','',''],
+        ['','',''],
+        ['','','']
+    ];
 
     useEffect(() => {
         try {
@@ -21,16 +26,13 @@ const Game = () => {
         } finally {}
     }, []);
 
+    const restartGame = () => dispatch(gameSlice.actions.gameRefreshed(initialBoard));
 
     return (
         <GameContainer>
             {gameStatus ? <h2>{gameStatus}</h2> : <h2>Player Turn: {_isXTurn ? 'X' : 'O'}</h2>}
             <Board/>
-            <button onClick={() => dispatch(gameSlice.actions.gameRefreshed([
-                ['','',''],
-                ['','',''],
-                ['','','']
-            ]))}>
+            <button onClick={restartGame}>
                 Restart Game
             </button>
         </GameContainer>
